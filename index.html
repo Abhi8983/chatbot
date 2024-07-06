@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battery and Supercapacitor Chatbot</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="/static/robot_logo.png" alt="Robot Logo">
+            <h1>Battery and Supercapacitor Chatbot</h1>
+        </div>
+        <div class="chat-box" id="chat-box"></div>
+        <div class="input-group">
+            <input type="text" id="question" placeholder="Ask a question...">
+            <button onclick="askQuestion()">Ask</button>
+        </div>
+    </div>
+    <script>
+        async function askQuestion() {
+            const question = document.getElementById('question').value;
+            if (!question.trim()) {
+                alert("Please enter a question.");
+                return;
+            }
+
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ question: question })
+            });
+            
+            const data = await response.json();
+            displayMessage('You: ' + question, 'user');
+            displayMessage('Bot: ' + data.answer, 'bot');
+            document.getElementById('question').value = '';
+        }
+
+        function displayMessage(message, type) {
+            const chatBox = document.getElementById('chat-box');
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            messageElement.classList.add(type);
+            messageElement.innerText = message;
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
